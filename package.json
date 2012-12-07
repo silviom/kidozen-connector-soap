@@ -1,0 +1,23 @@
+{
+  "name": "kidozen-connector-soap",
+  "version": "0.0.1",
+  "description": "Kidozen's connector to invoke SOAP services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/silviom/kidozen-connector-soap.git"
+  },
+  "keywords": [
+    "kidozen",
+    "connector",
+    "soap"
+  ],
+  "author": "Silvio Massari",
+  "license": "BSD",
+  "dependencies": {
+    "soap": "git+https://github.com/silviom/node-soap.git"
+  }
+}
