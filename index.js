@@ -12,8 +12,9 @@ module.exports = function(config){
 
     this.connect = function(cb){
         console.log("connect", !!this.client);
+        var that = this;
         soap.createClient (this.config.endpoint, function (err, result) {
-            console.log("connect res", err);
+            console.log("connect res", err, typeof result);
             if (err) {
                 var message = "SOAP Connector: Can not connect to server - " + JSON.stringify(err, null, "  ");
                 console.log(message);
@@ -21,7 +22,7 @@ module.exports = function(config){
                 return;
             }
 
-            this.client = result;
+            that.client = result;
             if (cb) cb();
         });
     };
