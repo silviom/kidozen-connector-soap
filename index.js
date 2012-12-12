@@ -18,7 +18,7 @@ var connect = function(cb){
     soap.createClient (this.config.endpoint, function (err, result) {
         if (err) {
             var message = stringify("SOAP Connector: Can not connect to server - ", err);
-            winston.error(message);
+            console.log(message);
             if (cb) cb(new Error(message));
             return;
         }
@@ -37,7 +37,7 @@ var execute = function(method, args, cb){
     
     if (!client) {
         var message = "Connector is not connected.";
-        winston.error(message);
+        console.log(message);
         if (cb) cb(new Error(message));
         return;
     }
