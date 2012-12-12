@@ -1,56 +1,44 @@
-var soap = require("soap"),
-    client = null;
+var soap = require("soap");
 
 module.exports = function(config){
     
+    var client = null;
     this.config = config;
-    this.isConnected = isConnected;
-    this.connect = connect;
-    this.disconnect = disconnect;
-    this.execute = execute;
-};
+    
+    this.isConnected = function(){
+        return !!client;
+    };
 
-var isConnected = function(){
-    return !!client;
-};
+    this.connect = function(cb){
+        soap.createClient (this.config.endpoint, function (err, result) {
+            if (err) {
+                var message = "SOAP Connector: Can not connect to server - " + JSON.stringify(err, null, "  ");
+                console.log(message);
+                if (cb) cb(new Error(message));
+                return;
+            }
 
-var connect = function(cb){
-    soap.createClient (this.config.endpoint, function (err, result) {
-        if (err) {
-            var message = stringify("SOAP Connector: Can not connect to server - ", err);
+            client = result;
+            if (cb) cb();
+        });
+    };
+
+    this.disconnect = function(cb){
+
+    };
+
+    this.execute = function(method, args, cb){
+        
+        if (!client) {
+            var message = "Connector is not connected.";
             console.log(message);
             if (cb) cb(new Error(message));
             return;
         }
 
-        client = result;
-        if (cb) cb();
-    });
+        var params = [].concat(args);
+        if (cb) params.push(cb);
 
+        client[method].apply (client, params);
+    };
 };
-
-var disconnect = function(cb){
-
-};
-
-var execute = function(method, args, cb){
-    
-    if (!client) {
-        var message = "Connector is not connected.";
-        console.log(message);
-        if (cb) cb(new Error(message));
-        return;
-    }
-
-    var params = [].concat(args);
-    if (cb) params.push(cb);
-
-    client[method].apply (client, params);
-};
-
-var stringify = function(message, data){
-    var result = message;
-    if (data) result += " " + JSON.stringify(data, null, "  ");
-    return result;
-};
-
