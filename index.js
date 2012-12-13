@@ -27,6 +27,8 @@ module.exports = function(config){
     };
 
     this.execute = function(method, args, cb){
+        console.log("-------------------------", method, args, this.client);
+
         if (!this.client) {
             if (cb) cb(new Error("Connector is not connected."));
             return;
