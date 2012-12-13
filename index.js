@@ -35,12 +35,13 @@ module.exports = function(config){
         var params = [].concat(args);
         if (cb) params.push(cb);
 
-        var func = client[method];
+        var func = this.client[method];
         if (!func) {
             if (cb) cb(new Error("The method '" + method + "' does not exist."));
             return;
         }
 
-        func.apply (client, params);
+        console.log("-------------------------", this.client, params);
+        func.apply (this.client, params);
     };
 };
