@@ -27,15 +27,16 @@ module.exports = function(config){
     };
 
     this.execute = function(method, args, cb){
-        console.log("-------------------------", method, args, this.client);
-
         if (!this.client) {
             if (cb) cb(new Error("Connector is not connected."));
             return;
         }
 
+        var that= this;
         var params = [].concat(args);
-        if (cb) params.push(cb);
+        if (cb) params.push(function(err, result){
+            cb(err, result, err ? 500 : 200);
+        });
 
         var func = this.client[method];
         if (!func) {
@@ -43,7 +44,6 @@ module.exports = function(config){
             return;
         }
 
-        console.log("-------------------------", this.client, params);
         func.apply (this.client, params);
     };
 };
