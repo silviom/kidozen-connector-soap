@@ -23,7 +23,6 @@ module.exports = function(config){
     };
 
     this.disconnect = function(cb){
-
     };
 
     this.execute = function(method, args, cb){
@@ -32,17 +31,20 @@ module.exports = function(config){
             return;
         }
 
-        var that= this;
-        var params = [].concat(args);
-        if (cb) params.push(function(err, result){
-            cb(err, result, err ? 500 : 200);
-        });
-
         var func = this.client[method];
         if (!func) {
             if (cb) cb(new Error("The method '" + method + "' does not exist."));
             return;
         }
+
+        var params = [].concat(args);
+        if (cb) params.push(function(err, result){
+            if (err) {
+                cb(err);
+            } else {
+                cb(null, result[method + "Result"]);
+            }
+        });
 
         func.apply (this.client, params);
     };
