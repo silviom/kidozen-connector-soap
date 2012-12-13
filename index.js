@@ -6,19 +6,14 @@ module.exports = function(config){
     this.config = config;
     
     this.isConnected = function(){
-        console.log("isConnected", !!this.client);
         return !!this.client;
     };
 
     this.connect = function(cb){
-        console.log("connect", !!this.client);
         var that = this;
         soap.createClient (this.config.endpoint, function (err, result) {
-            console.log("connect res", err, typeof result);
             if (err) {
-                var message = "SOAP Connector: Can not connect to server - " + JSON.stringify(err, null, "  ");
-                console.log(message);
-                if (cb) cb(new Error(message));
+                if (cb) cb(new Error("SOAP Connector: Can not connect to server - " + JSON.stringify(err, null, "  ")));
                 return;
             }
 
@@ -32,17 +27,20 @@ module.exports = function(config){
     };
 
     this.execute = function(method, args, cb){
-        console.log ("execute", !!this.client);
         if (!this.client) {
-            var message = "Connector is not connected.";
-            console.log(message);
-            if (cb) cb(new Error(message));
+            if (cb) cb(new Error("Connector is not connected."));
             return;
         }
 
         var params = [].concat(args);
         if (cb) params.push(cb);
 
-        client[method].apply (client, params);
+        var func = client[method];
+        if (!func) {
+            if (cb) cb(new Error("The method '" + method + "' does not exist."));
+            return;
+        }
+
+        func.apply (client, params);
     };
 };
